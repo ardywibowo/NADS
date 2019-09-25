@@ -111,7 +111,7 @@ def main():
   n_bins = 2. ** args.n_bits
 
   # Define model and loss criteria
-  model = SearchNetwork(1, args.n_flow, args.n_block, n_bins, affine=args.affine, conv_lu=not args.no_lu, learnable_steps=2)
+  model = SearchNetwork(1, args.n_flow, args.n_block, n_bins, affine=args.affine, conv_lu=not args.no_lu)
   model = nn.DataParallel(model, [args.gpu])
   model.load_state_dict(torch.load("architecture.pt", map_location="cuda:{}".format(args.gpu)))
   model = model.module
@@ -120,7 +120,7 @@ def main():
   with open(args.save + '/genotype.pkl', 'wb') as fp:
     pickle.dump(genotype, fp)
 
-  model_single = EnsembleNetwork(1, args.n_flow, args.n_block, n_bins, genotype, affine=args.affine, conv_lu=not args.no_lu, learnable_steps=2)
+  model_single = EnsembleNetwork(1, args.n_flow, args.n_block, n_bins, genotype, affine=args.affine, conv_lu=not args.no_lu)
   model = model_single
   model = model.to(device)
 

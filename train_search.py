@@ -106,7 +106,7 @@ def main():
   approx_samples = 4
 
   # Define model
-  model_single = Network(1, args.n_flow, args.n_block, n_bins, affine=args.affine, conv_lu=not args.no_lu, learnable_steps=2)
+  model_single = Network(1, args.n_flow, args.n_block, n_bins, affine=args.affine, conv_lu=not args.no_lu)
   model = nn.DataParallel(model_single)
   model = model.to(device)
 

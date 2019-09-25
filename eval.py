@@ -157,7 +157,7 @@ if __name__ == '__main__':
   with open(weights_name + '.pkl', 'rb') as fp:
     genotype = pickle.load(fp)
 
-  model_single = EnsembleNetwork(1, args.n_flow, args.n_block, n_bins, genotype, affine=True, conv_lu=not args.no_lu, learnable_steps=2)
+  model_single = EnsembleNetwork(1, args.n_flow, args.n_block, n_bins, genotype, affine=args.affine, conv_lu=not args.no_lu)
   model = model_single
   model = model.to(device)
 
