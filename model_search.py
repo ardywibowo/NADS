@@ -38,7 +38,7 @@ class MixedOp(nn.Module):
     return -Variable(torch.log(-torch.log(U + eps) + eps))
 
   def gumbel_softmax_sample(self, logits, temperature):
-    y = logits + sample_gumbel(logits.size())
+    y = logits + self.sample_gumbel(logits.size())
     return F.softmax(y / temperature, dim=-1)
 
   def forward(self, x):
