@@ -33,17 +33,17 @@ class MixedOp(nn.Module):
 
     self.p_logit = nn.Parameter(torch.empty(len(PRIMITIVES)).normal_(mean=0, std=1e-3))
 
-  def forward(self, x):
-    eps = 1e-7
-    temp = 1.5
+  def sample_gumbel(self, shape, eps=1e-20):
+    U = torch.rand(shape).cuda()
+    return -Variable(torch.log(-torch.log(U + eps) + eps))
 
-    p = F.softmax(self.p_logit)
-    unif_noise = torch.rand_like(self.p_logit)
-    weights = (torch.log(p + eps) \
-                - torch.log(1 - p + eps) \
-                + torch.log(unif_noise + eps) \
-                - torch.log(1 - unif_noise + eps))
-    weights = F.softmax(weights / temp)
+  def gumbel_softmax_sample(self, logits, temperature):
+    y = logits + sample_gumbel(logits.size())
+    return F.softmax(y / temperature, dim=-1)
+
+  def forward(self, x):
+    temp = 1.5
+    weights = self.gumbel_softmax_sample(self.p_logit, temp)
 
     s = 0
     for w, op in zip(weights, self._ops):
